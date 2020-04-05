@@ -7,6 +7,6 @@ namespace VidRental.DataAccess.DbModels
 {
     public class User : IdentityUser
     {
-
+        public virtual ICollection<DeliveryAddress> Addresses { get; set; }
     }
 }

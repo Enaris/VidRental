@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidRental.API", "VidRental.API\VidRental.API.csproj", "{8CEB8519-D1DF-4794-82A4-57B6C010E422}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VidRental.API", "VidRental.API\VidRental.API.csproj", "{8CEB8519-D1DF-4794-82A4-57B6C010E422}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidRental.DataAccess", "VidRental.DataAccess\VidRental.DataAccess.csproj", "{76B4BD2B-A764-47B9-B506-D60F588B7D2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VidRental.DataAccess", "VidRental.DataAccess\VidRental.DataAccess.csproj", "{76B4BD2B-A764-47B9-B506-D60F588B7D2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidRental.Services", "VidRental.Services\VidRental.Services.csproj", "{CFC8A121-53AD-4D2F-A0E2-BF45B66FD158}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{76B4BD2B-A764-47B9-B506-D60F588B7D2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76B4BD2B-A764-47B9-B506-D60F588B7D2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76B4BD2B-A764-47B9-B506-D60F588B7D2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFC8A121-53AD-4D2F-A0E2-BF45B66FD158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFC8A121-53AD-4D2F-A0E2-BF45B66FD158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFC8A121-53AD-4D2F-A0E2-BF45B66FD158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFC8A121-53AD-4D2F-A0E2-BF45B66FD158}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
