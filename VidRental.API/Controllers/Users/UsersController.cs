@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using VidRental.Services.ResponseWrapper;
 using VidRental.Services.Services;
 
 namespace VidRental.API.Controllers.Users
@@ -21,7 +22,7 @@ namespace VidRental.API.Controllers.Users
             var userBaseInfo = await UsersService.GetUserBaseInfo(id);
 
             if (userBaseInfo == null)
-                return NotFound(this.NotFoundMessage(id));
+                return NotFound(ApiResponse.Failure("User", this.NotFoundMessage(id)));
 
             return Ok(userBaseInfo);
         }

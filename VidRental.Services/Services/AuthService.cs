@@ -9,6 +9,7 @@ using VidRental.Services.Dtos.Request;
 using VidRental.Services.Dtos.Auth;
 using VidRental.Services.Dtos.Response.User;
 using System.Security.Claims;
+using VidRental.DataAccess.Repositories;
 
 namespace VidRental.Services.Services
 {
@@ -31,6 +32,7 @@ namespace VidRental.Services.Services
         public async Task<RegisterResult> Register(RegisterRequest request)
         {
             var userToCreate = Mapper.Map<RegisterRequest, User>(request);
+            userToCreate.UserName = request.Email;
 
             var created = await UserManager.CreateAsync(userToCreate, request.Password);
 

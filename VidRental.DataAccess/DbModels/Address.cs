@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VidRental.DataAccess.DbModels
 {
-    public class DeliveryAddress
+    public class Address
     {
         public Guid Id { get; set; }
 

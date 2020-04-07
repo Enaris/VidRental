@@ -17,6 +17,7 @@ using VidRental.Services.Dtos.Auth;
 using VidRental.Services.Dtos.Request;
 using VidRental.Services.Dtos.Response;
 using VidRental.Services.Dtos.Response.User;
+using VidRental.Services.ResponseWrapper;
 using VidRental.Services.Services;
 
 namespace VidRental.API.Controllers.Auth
@@ -28,6 +29,7 @@ namespace VidRental.API.Controllers.Auth
         public AuthController(
             IAuthService authService,
             IUsersService usersService,
+            IAddressService addressService,
             UserManager<User> userManager, 
             SignInManager<User> signInManager, 
             IConfiguration configuration, 
@@ -35,6 +37,7 @@ namespace VidRental.API.Controllers.Auth
         {
             AuthService = authService;
             UsersService = usersService;
+            AddressService = addressService;
             UserManager = userManager;
             SignInManager = signInManager;
             Configuration = configuration;
@@ -43,6 +46,7 @@ namespace VidRental.API.Controllers.Auth
 
         public IAuthService AuthService { get; }
         public IUsersService UsersService { get; }
+        public IAddressService AddressService { get; }
         public UserManager<User> UserManager { get; }
         public SignInManager<User> SignInManager { get; }
         public IConfiguration Configuration { get; }
@@ -51,33 +55,47 @@ namespace VidRental.API.Controllers.Auth
         [HttpPost("register", Name = AuthNames.Register)]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
+            var userWithRequestedEmail = await UserManager.FindByEmailAsync(request.Email);
+            if (userWithRequestedEmail != null)
+                return BadRequest(ApiResponse.Failure("Email", this.UserExistsMessage(request.Email)));
+
             var registerResult = await AuthService.Register(request);
 
             if (!registerResult.Succeeded)
-                return BadRequest(registerResult.Errros);
+                return BadRequest(ApiResponse.Failure("Register", "Something went wrong"));
+
+            if (request.AddressAdded)
+            {
+                var addressToAdd = request.Address;
+                addressToAdd.UserId = registerResult.NewUser.Id;
+                await AddressService.CreateAddress(addressToAdd);
+            }
 
             return CreatedAtRoute(UsersNames.GetUserBaseInfo, 
                 new { id = registerResult.NewUser.Id, controller = UsersNames.Controller }, 
-                registerResult.NewUser);
+                ApiResponse<UserBaseInfo>.Success(registerResult.NewUser));
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var userDb = await UserManager.FindByEmailAsync(request.Email);
 
             if (userDb == null)
-                return BadRequest("Login or password is invalid");
+                return BadRequest(ApiResponse.Failure("Login", this.BadLoginMessage()));
 
             var loginResult = await SignInManager.CheckPasswordSignInAsync(userDb, request.Password, false);
             
             if (!loginResult.Succeeded)
-                return BadRequest("Login or password is invalid");
+                return BadRequest(ApiResponse.Failure("Login", this.BadLoginMessage()));
 
-            var token = GenerateJwtToken(userDb);
-            var userBaseInfo = Mapper.Map<User, UserBaseInfo>(userDb);
+            var responseData = new LoginResult
+            {
+                Token = GenerateJwtToken(userDb),
+                User = Mapper.Map<User, UserBaseInfo>(userDb)
+            };
 
-            return Ok(new LoginResult { Token = token, User = userBaseInfo });
+            return Ok(ApiResponse<LoginResult>.Success(responseData));
         }
 
         private string GenerateJwtToken(User user)

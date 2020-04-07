@@ -14,6 +14,6 @@ namespace VidRental.DataAccess.DataContext
 
         }
 
-        public DbSet<DeliveryAddress> Addresses { get; set; }
+        public DbSet<Address> Addresses { get; set; }
     }
 }

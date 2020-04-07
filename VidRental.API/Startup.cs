@@ -12,6 +12,12 @@ using VidRental.DataAccess.DataContext;
 using VidRental.DataAccess.DbModels;
 using VidRental.API.AutoMapper;
 using VidRental.Services.Services;
+using VidRental.DataAccess.Repositories;
+using FluentValidation;
+using VidRental.Services.Dtos.Request;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
+using VidRental.API.ActionFilters;
 
 namespace VidRental.API
 {
@@ -27,7 +33,8 @@ namespace VidRental.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options => { options.Filters.Add(typeof(ValidateModelStateAttribute)); })
+                .AddFluentValidation(fv => fv.ImplicitlyValidateChildProperties = true);
 
             var migrationAssembly = $"{ nameof(VidRental) }.{ nameof(VidRental.DataAccess) }";
             services
@@ -43,6 +50,7 @@ namespace VidRental.API
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                     options.Password.RequireLowercase = false;
+                    options.User.RequireUniqueEmail = true;
                 })
                 .AddEntityFrameworkStores<VidContext>();
 
@@ -62,7 +70,16 @@ namespace VidRental.API
 
             services.AddAutoMapper(RootProfiles.Maps);
 
+            services.Configure<ApiBehaviorOptions>(o => o.SuppressModelStateInvalidFilter = true);
+
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAddressService, AddressService>();
+            services.AddScoped<IAddressRepository, AddressRepository>();
+
+            services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
+            services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+            services.AddTransient<IValidator<AddressAddRequest>, AddressAddRequestValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
