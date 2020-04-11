@@ -18,6 +18,10 @@ using VidRental.Services.Dtos.Request;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using VidRental.API.ActionFilters;
+using Microsoft.AspNetCore.Diagnostics;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using VidRental.Services.ResponseWrapper;
 
 namespace VidRental.API
 {
@@ -85,10 +89,20 @@ namespace VidRental.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+
+            app.UseExceptionHandler(a => a.Run(async context =>
             {
-                app.UseDeveloperExceptionPage();
-            }
+                var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                var exception = exceptionHandlerPathFeature.Error;
+
+                var result = JsonConvert.SerializeObject(ApiResponse.Failure("api", "Something went wrong, try again"));
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(result);
+            }));
 
             app.UseCors(
                 options => options

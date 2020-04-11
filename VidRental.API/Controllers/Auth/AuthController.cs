@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +53,7 @@ namespace VidRental.API.Controllers.Auth
         public IConfiguration Configuration { get; }
         public IMapper Mapper { get; }
 
+        [Authorize]
         [HttpPost("register", Name = AuthNames.Register)]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {

@@ -32,7 +32,7 @@ namespace VidRental.Services.Dtos.Request
                 .Matches(@"^\d{9}$").WithMessage("Invalid phone number");
             RuleFor(ar => ar.ZipCode)
                 .NotEmpty()
-                .Matches(@"^\d{5}$").WithMessage("Invalid zip code");
+                .Matches(@"^\d{2}-\d{3}$").WithMessage("Invalid zip code");
         
         }
     }
