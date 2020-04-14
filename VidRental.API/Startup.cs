@@ -22,6 +22,9 @@ using Microsoft.AspNetCore.Diagnostics;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using VidRental.Services.ResponseWrapper;
+using VidRental.API.Extensions;
+using Microsoft.AspNetCore.Identity;
+using VidRental.DataAccess.Roles;
 
 namespace VidRental.API
 {
@@ -56,6 +59,7 @@ namespace VidRental.API
                     options.Password.RequireLowercase = false;
                     options.User.RequireUniqueEmail = true;
                 })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<VidContext>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -71,6 +75,12 @@ namespace VidRental.API
                             Encoding.UTF8.GetBytes(Configuration["JwtSecurityKey"]))
                     };
                 });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(ApiRoles.User, policy => policy.RequireRole(ApiRoles.Roles));
+                options.AddPolicy(ApiRoles.Employee, policy => policy.RequireRole(ApiRoles.Admin, ApiRoles.Employee));
+                options.AddPolicy(ApiRoles.Admin, policy => policy.RequireRole(ApiRoles.Admin));
+            });
 
             services.AddAutoMapper(RootProfiles.Maps);
 
@@ -80,6 +90,7 @@ namespace VidRental.API
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IAddressRepository, AddressRepository>();
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
@@ -104,6 +115,7 @@ namespace VidRental.API
                 await context.Response.WriteAsync(result);
             }));
 
+            Seeder.SeedRolesAndAdmin(app.ApplicationServices).Wait();
             app.UseCors(
                 options => options
                     .WithOrigins("http://localhost:3000")
@@ -114,6 +126,7 @@ namespace VidRental.API
 
             app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {

@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using VidRental.DataAccess.Roles;
 
 namespace VidRental.API.Controllers
 {
     [ApiController]
+    [Authorize(Policy = nameof(ApiRoles.Admin))]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {

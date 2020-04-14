@@ -32,9 +32,10 @@ namespace VidRental.API.Controllers.Auth
             IUsersService usersService,
             IAddressService addressService,
             UserManager<User> userManager, 
-            SignInManager<User> signInManager, 
+            SignInManager<User> signInManager,
             IConfiguration configuration, 
-            IMapper mapper)
+            IMapper mapper,
+            ITokenService tokenService)
         {
             AuthService = authService;
             UsersService = usersService;
@@ -43,6 +44,7 @@ namespace VidRental.API.Controllers.Auth
             SignInManager = signInManager;
             Configuration = configuration;
             Mapper = mapper;
+            TokenService = tokenService;
         }
 
         public IAuthService AuthService { get; }
@@ -52,8 +54,8 @@ namespace VidRental.API.Controllers.Auth
         public SignInManager<User> SignInManager { get; }
         public IConfiguration Configuration { get; }
         public IMapper Mapper { get; }
+        public ITokenService TokenService { get; }
 
-        [Authorize]
         [HttpPost("register", Name = AuthNames.Register)]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
@@ -91,38 +93,25 @@ namespace VidRental.API.Controllers.Auth
             if (!loginResult.Succeeded)
                 return BadRequest(ApiResponse.Failure("Login", this.BadLoginMessage()));
 
+            var userBaseInfo = await UsersService.GetUserBaseInfo(userDb.Id);
+
             var responseData = new LoginResult
             {
-                Token = GenerateJwtToken(userDb),
-                User = Mapper.Map<User, UserBaseInfo>(userDb)
+                Token = await TokenService.GenerateJwtToken(userDb),
+                User = userBaseInfo
             };
 
             return Ok(ApiResponse<LoginResult>.Success(responseData));
         }
 
-        private string GenerateJwtToken(User user)
+        [HttpPost("refreshtoken")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName)
-            };
+            var result = await TokenService.RefreshToken(request.Token);
+            if (result == null)
+                return BadRequest(ApiResponse.Failure("Auth", "Bad token"));
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSecurityKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expiry = DateTime.Now.AddDays(Convert.ToInt32(Configuration["JwtExpiryInDays"]));
-
-            var token = new JwtSecurityToken(
-                Configuration["JwtIssuer"],
-                Configuration["JwtAudience"],
-                claims,
-                expires: expiry,
-                signingCredentials: creds
-            );
-
-            var tokenHanlder = new JwtSecurityTokenHandler();
-
-            return tokenHanlder.WriteToken(token);
+            return Ok(ApiResponse<RefreshTokenResult>.Success(result));
         }
     }
 }

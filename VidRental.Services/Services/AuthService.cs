@@ -10,6 +10,7 @@ using VidRental.Services.Dtos.Auth;
 using VidRental.Services.Dtos.Response.User;
 using System.Security.Claims;
 using VidRental.DataAccess.Repositories;
+using VidRental.DataAccess.Roles;
 
 namespace VidRental.Services.Services
 {
@@ -18,16 +19,19 @@ namespace VidRental.Services.Services
         public AuthService(
             SignInManager<User> signInManager,
             UserManager<User> userManager,
-            IMapper mapper)
+            IMapper mapper, 
+            IUsersService usersService)
         {
             SignInManager = signInManager;
             UserManager = userManager;
             Mapper = mapper;
+            UsersService = usersService;
         }
 
         public SignInManager<User> SignInManager { get; }
         public UserManager<User> UserManager { get; }
         public IMapper Mapper { get; }
+        public IUsersService UsersService { get; }
 
         public async Task<RegisterResult> Register(RegisterRequest request)
         {
@@ -39,8 +43,17 @@ namespace VidRental.Services.Services
             if (!created.Succeeded)
                 return new RegisterResult { IdentityResult = created };
 
-            var baseUserInfo = Mapper.Map<User, UserBaseInfo>(userToCreate);
+            var roleAdded = await UserManager.AddToRoleAsync(userToCreate, ApiRoles.User);
+
+            if (!roleAdded.Succeeded)
+            {
+                await UserManager.DeleteAsync(userToCreate);
+                return new RegisterResult { IdentityResult = roleAdded };
+            }
+
+            var baseUserInfo = await UsersService.GetUserBaseInfo(userToCreate.Id);
             return new RegisterResult { NewUser = baseUserInfo, IdentityResult = created };
         }
+
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VidRental.DataAccess.DbModels;
 using VidRental.Services.Dtos.Response;
+using VidRental.Services.Dtos.Response.Role;
 using VidRental.Services.Dtos.Response.User;
 
 namespace VidRental.Services.Services
@@ -31,6 +32,8 @@ namespace VidRental.Services.Services
                 return null;
 
             var userBaseInfo = Mapper.Map<User, UserBaseInfo>(userDb);
+            var userRoles = await UserManager.GetRolesAsync(userDb);
+            userBaseInfo.Roles = userRoles.Select(r => new RoleDto { Name = r });
 
             return userBaseInfo;
         }
