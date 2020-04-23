@@ -5,22 +5,19 @@ using System.Text;
 
 namespace VidRental.Services.Dtos.Request
 {
-    public class RegisterRequest
+    public class EmployeeAddRequestFlat
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-
-        public bool AddressAdded { get; set; }
-
-        public AddressAddRequest Address { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool IsActive { get; set; }
     }
 
-    public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
+    public class EmployeeAddRequestFlatValidator : AbstractValidator<EmployeeAddRequestFlat>
     {
-        public RegisterRequestValidator()
+        public EmployeeAddRequestFlatValidator()
         {
             RuleFor(rr => rr.FirstName)
                 .NotEmpty();
@@ -34,10 +31,6 @@ namespace VidRental.Services.Dtos.Request
                 .NotEmpty();
             RuleFor(rr => rr.Password)
                 .NotEmpty();
-
-            RuleFor(rr => rr.Address)
-                .NotNull()
-                .When(rr => rr.AddressAdded);
         }
     }
 }

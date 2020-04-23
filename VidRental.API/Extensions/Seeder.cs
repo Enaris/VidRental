@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using VidRental.DataAccess.DataContext;
 using VidRental.DataAccess.DbModels;
 using VidRental.DataAccess.Roles;
+using VidRental.Services.Dtos.Request;
+using VidRental.Services.Services;
 
 namespace VidRental.API.Extensions
 {
@@ -49,6 +51,10 @@ namespace VidRental.API.Extensions
 
                 if (!adminRoleAdded.Succeeded)
                     throw new Exception("Admin initialization failed");
+
+                var employeeService = scope.ServiceProvider.GetRequiredService<IShopEmployeeService>();
+
+                await employeeService.AddEmployee(new EmployeeAddRequest { UserId = admin.Id, IsActive = true });
             }
         } 
 

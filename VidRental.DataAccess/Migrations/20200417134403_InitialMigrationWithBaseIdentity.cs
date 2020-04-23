@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace VidRental.DataAccess.Migrations
 {
-    public partial class initalMigrationIdentity : Migration
+    public partial class InitialMigrationWithBaseIdentity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,18 +28,20 @@ namespace VidRental.DataAccess.Migrations
                     Id = table.Column<string>(nullable: false),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
                     PasswordHash = table.Column<string>(nullable: true),
                     SecurityStamp = table.Column<string>(nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    FirstName = table.Column<string>(nullable: false),
+                    LastName = table.Column<string>(nullable: false),
+                    PhoneNumber = table.Column<string>(nullable: false),
+                    Email = table.Column<string>(maxLength: 256, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -176,6 +178,44 @@ namespace VidRental.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ShopEmployees",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false),
+                    UserId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopEmployees", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShopEmployees_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShopUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CanBorrow = table.Column<bool>(nullable: false),
+                    UserId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShopUsers_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_UserId",
                 table: "Addresses",
@@ -219,6 +259,16 @@ namespace VidRental.DataAccess.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopEmployees_UserId",
+                table: "ShopEmployees",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopUsers_UserId",
+                table: "ShopUsers",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -240,6 +290,12 @@ namespace VidRental.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "ShopEmployees");
+
+            migrationBuilder.DropTable(
+                name: "ShopUsers");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

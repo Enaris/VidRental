@@ -195,6 +195,46 @@ namespace VidRental.DataAccess.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("VidRental.DataAccess.DbModels.ShopEmployee", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShopEmployees");
+                });
+
+            modelBuilder.Entity("VidRental.DataAccess.DbModels.ShopUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("CanBorrow")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShopUsers");
+                });
+
             modelBuilder.Entity("VidRental.DataAccess.DbModels.User", b =>
                 {
                     b.Property<string>("Id")
@@ -325,6 +365,24 @@ namespace VidRental.DataAccess.Migrations
                 {
                     b.HasOne("VidRental.DataAccess.DbModels.User", "User")
                         .WithMany("Addresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VidRental.DataAccess.DbModels.ShopEmployee", b =>
+                {
+                    b.HasOne("VidRental.DataAccess.DbModels.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VidRental.DataAccess.DbModels.ShopUser", b =>
+                {
+                    b.HasOne("VidRental.DataAccess.DbModels.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

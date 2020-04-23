@@ -33,26 +33,31 @@ namespace VidRental.Services.Services
         public IMapper Mapper { get; }
         public IUsersService UsersService { get; }
 
-        public async Task<RegisterResult> Register(RegisterRequest request)
+        public async Task<UserBaseInfo> Register(RegisterRequest request, RolesEnum role)
         {
             var userToCreate = Mapper.Map<RegisterRequest, User>(request);
             userToCreate.UserName = request.Email;
 
-            var created = await UserManager.CreateAsync(userToCreate, request.Password);
+            return await Register(userToCreate, request.Password, role);
+        }
+
+        public async Task<UserBaseInfo> Register(User user, string password, RolesEnum role)
+        {
+            var created = await UserManager.CreateAsync(user, password);
 
             if (!created.Succeeded)
-                return new RegisterResult { IdentityResult = created };
+                return null;
 
-            var roleAdded = await UserManager.AddToRoleAsync(userToCreate, ApiRoles.User);
+            var roleAdded = await UserManager.AddToRoleAsync(user, role.ToString());
 
             if (!roleAdded.Succeeded)
             {
-                await UserManager.DeleteAsync(userToCreate);
-                return new RegisterResult { IdentityResult = roleAdded };
+                await UserManager.DeleteAsync(user);
+                return null;
             }
 
-            var baseUserInfo = await UsersService.GetUserBaseInfo(userToCreate.Id);
-            return new RegisterResult { NewUser = baseUserInfo, IdentityResult = created };
+            var baseUserInfo = await UsersService.GetUserBaseInfo(user.Id);
+            return baseUserInfo;
         }
 
     }

@@ -10,8 +10,8 @@ using VidRental.DataAccess.DataContext;
 namespace VidRental.DataAccess.Migrations
 {
     [DbContext(typeof(VidContext))]
-    [Migration("20200406144340_addedFistAndLastNameToUser")]
-    partial class addedFistAndLastNameToUser
+    [Migration("20200417134403_InitialMigrationWithBaseIdentity")]
+    partial class InitialMigrationWithBaseIdentity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -197,6 +197,46 @@ namespace VidRental.DataAccess.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("VidRental.DataAccess.DbModels.ShopEmployee", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShopEmployees");
+                });
+
+            modelBuilder.Entity("VidRental.DataAccess.DbModels.ShopUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("CanBorrow")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShopUsers");
+                });
+
             modelBuilder.Entity("VidRental.DataAccess.DbModels.User", b =>
                 {
                     b.Property<string>("Id")
@@ -210,6 +250,7 @@ namespace VidRental.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
@@ -242,6 +283,7 @@ namespace VidRental.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
@@ -325,6 +367,24 @@ namespace VidRental.DataAccess.Migrations
                 {
                     b.HasOne("VidRental.DataAccess.DbModels.User", "User")
                         .WithMany("Addresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VidRental.DataAccess.DbModels.ShopEmployee", b =>
+                {
+                    b.HasOne("VidRental.DataAccess.DbModels.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VidRental.DataAccess.DbModels.ShopUser", b =>
+                {
+                    b.HasOne("VidRental.DataAccess.DbModels.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

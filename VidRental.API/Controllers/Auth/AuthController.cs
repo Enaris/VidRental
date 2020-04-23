@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using VidRental.API.Controllers.Users;
 using VidRental.DataAccess.DbModels;
+using VidRental.DataAccess.Roles;
 using VidRental.Services.Dtos.Auth;
 using VidRental.Services.Dtos.Request;
 using VidRental.Services.Dtos.Response;
@@ -35,7 +36,8 @@ namespace VidRental.API.Controllers.Auth
             SignInManager<User> signInManager,
             IConfiguration configuration, 
             IMapper mapper,
-            ITokenService tokenService)
+            ITokenService tokenService,
+            IShopUserService shopUserService)
         {
             AuthService = authService;
             UsersService = usersService;
@@ -45,6 +47,7 @@ namespace VidRental.API.Controllers.Auth
             Configuration = configuration;
             Mapper = mapper;
             TokenService = tokenService;
+            ShopUserService = shopUserService;
         }
 
         public IAuthService AuthService { get; }
@@ -55,6 +58,7 @@ namespace VidRental.API.Controllers.Auth
         public IConfiguration Configuration { get; }
         public IMapper Mapper { get; }
         public ITokenService TokenService { get; }
+        public IShopUserService ShopUserService { get; }
 
         [HttpPost("register", Name = AuthNames.Register)]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
@@ -63,21 +67,23 @@ namespace VidRental.API.Controllers.Auth
             if (userWithRequestedEmail != null)
                 return BadRequest(ApiResponse.Failure("Email", this.UserExistsMessage(request.Email)));
 
-            var registerResult = await AuthService.Register(request);
+            var registerResult = await AuthService.Register(request, RolesEnum.User);
 
-            if (!registerResult.Succeeded)
+            if (registerResult == null)
                 return BadRequest(ApiResponse.Failure("Register", "Something went wrong"));
 
             if (request.AddressAdded)
             {
                 var addressToAdd = request.Address;
-                addressToAdd.UserId = registerResult.NewUser.Id;
+                addressToAdd.UserId = registerResult.Id;
                 await AddressService.CreateAddress(addressToAdd);
             }
 
+            await ShopUserService.AddShopUser(new ShopUserAddRequest { CanBorrow = true, UserId = registerResult.Id });
+
             return CreatedAtRoute(UsersNames.GetUserBaseInfo, 
-                new { id = registerResult.NewUser.Id, controller = UsersNames.Controller }, 
-                ApiResponse<UserBaseInfo>.Success(registerResult.NewUser));
+                new { id = registerResult.Id, controller = UsersNames.Controller }, 
+                ApiResponse<UserBaseInfo>.Success(registerResult));
         }
 
         [HttpPost("Login")]

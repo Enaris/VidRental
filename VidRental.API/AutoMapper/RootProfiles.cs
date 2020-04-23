@@ -10,7 +10,9 @@ namespace VidRental.API.AutoMapper
         public static Type[] Maps => new[]
         {
             typeof(UserProfiles),
-            typeof(AddressProfiles)
+            typeof(AddressProfiles),
+            typeof(ShopUserProfiles),
+            typeof(ShopEmployeeProfiles)
         };
     }
 }

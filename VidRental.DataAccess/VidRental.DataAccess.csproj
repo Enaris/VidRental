@@ -7,6 +7,12 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200412161039_identityRoles.cs" />
     <Compile Remove="Migrations\20200412161039_identityRoles.Designer.cs" />
+    <Compile Remove="Migrations\20200417133925_StringIdsToGuids.cs" />
+    <Compile Remove="Migrations\20200417133925_StringIdsToGuids.Designer.cs" />
+    <Compile Remove="Migrations\20200417134113_StringIdsToGuids.cs" />
+    <Compile Remove="Migrations\20200417134113_StringIdsToGuids.Designer.cs" />
+    <Compile Remove="Migrations\20200417134311_StringIdsToGuids.cs" />
+    <Compile Remove="Migrations\20200417134311_StringIdsToGuids.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
