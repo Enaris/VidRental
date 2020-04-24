@@ -12,7 +12,9 @@ namespace VidRental.API.AutoMapper
             typeof(UserProfiles),
             typeof(AddressProfiles),
             typeof(ShopUserProfiles),
-            typeof(ShopEmployeeProfiles)
+            typeof(ShopEmployeeProfiles), 
+            typeof(MovieProfiles), 
+            typeof(ImageProfiles)
         };
     }
 }

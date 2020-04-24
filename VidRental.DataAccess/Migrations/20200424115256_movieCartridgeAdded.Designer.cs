@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VidRental.DataAccess.DataContext;
 
 namespace VidRental.DataAccess.Migrations
 {
     [DbContext(typeof(VidContext))]
-    partial class VidContextModelSnapshot : ModelSnapshot
+    [Migration("20200424115256_movieCartridgeAdded")]
+    partial class movieCartridgeAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

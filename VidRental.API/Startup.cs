@@ -93,10 +93,15 @@ namespace VidRental.API
             services.AddScoped<IShopUserService, ShopUserService>();
             services.AddScoped<IShopEmployeeService, ShopEmployeeService>();
             services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IMovieService, MovieService>();
 
             services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IShopUserRepository, ShopUserRepository>();
             services.AddScoped<IShopEmployeeRepository, ShopEmployeeRepository>();
+            services.AddScoped<ICartridgeRepository, CartridgeRepository>();
+            services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
+            services.AddScoped<IMovieImageRepository, MovieImageRepository>();
 
             services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();

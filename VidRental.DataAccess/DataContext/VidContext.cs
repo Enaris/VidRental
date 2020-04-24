@@ -17,5 +17,8 @@ namespace VidRental.DataAccess.DataContext
         public DbSet<Address> Addresses { get; set; }
         public DbSet<ShopUser> ShopUsers { get; set; }
         public DbSet<ShopEmployee> ShopEmployees { get; set; }
+        public DbSet<Movie> Movies { get; set; }
+        public DbSet<MovieImage> MovieImages { get; set; }
+        public DbSet<Cartridge> Cartridges { get; set; }
     }
 }
