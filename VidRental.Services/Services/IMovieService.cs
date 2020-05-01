@@ -11,5 +11,7 @@ namespace VidRental.Services.Services
         Task<MovieDetails> AddMovie(MovieAddRequest request);
         Task<IEnumerable<MovieForList>> GetMovies();
         Task<MovieDetails> GetMovie(string title, DateTime date);
+        Task<MovieDetails> GetMovie(Guid id, bool noTracking = false);
+        Task<bool> UpdateMovie(MovieUpdateRequest request);
     }
 }

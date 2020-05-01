@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VidRental.API", "VidRental.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VidRental.DataAccess", "VidRental.DataAccess\VidRental.DataAccess.csproj", "{76B4BD2B-A764-47B9-B506-D60F588B7D2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VidRental.Services", "VidRental.Services\VidRental.Services.csproj", "{CFC8A121-53AD-4D2F-A0E2-BF45B66FD158}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VidRental.Services", "VidRental.Services\VidRental.Services.csproj", "{CFC8A121-53AD-4D2F-A0E2-BF45B66FD158}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

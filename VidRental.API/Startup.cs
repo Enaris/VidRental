@@ -25,6 +25,8 @@ using VidRental.Services.ResponseWrapper;
 using VidRental.API.Extensions;
 using Microsoft.AspNetCore.Identity;
 using VidRental.DataAccess.Roles;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace VidRental.API
 {
@@ -94,6 +96,9 @@ namespace VidRental.API
             services.AddScoped<IShopEmployeeService, ShopEmployeeService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IMovieService, MovieService>();
+            services.AddScoped<IUploadService, UploadService>();
+            services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IDeleteImagesService, DeleteImagesService>();
 
             services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IShopUserRepository, ShopUserRepository>();
@@ -132,6 +137,14 @@ namespace VidRental.API
                     .WithOrigins("http://localhost:3000")
                     .AllowAnyHeader()
                     .AllowAnyMethod());
+
+            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), @"Static")),
+                RequestPath = new PathString("/Static")
+            });
 
             app.UseRouting();
 

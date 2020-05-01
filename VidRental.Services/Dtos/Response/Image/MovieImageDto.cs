@@ -8,7 +8,7 @@ namespace VidRental.Services.Dtos.Response.Image
     {
         public Guid Id { get; set; }
         public string Url { get; set; }
-        public string Type { get; set; }
+        public string ImageType { get; set; }
 
         public Guid MovieId { get; set; }
         public Guid ImageId { get; set; }

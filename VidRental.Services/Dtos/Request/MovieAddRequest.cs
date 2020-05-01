@@ -10,9 +10,6 @@ namespace VidRental.Services.Dtos.Request
         public string Title { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string Director { get; set; }
-        public string Thumbnail { get; set; }
-        public IEnumerable<string> Images { get; set; }
-        public string CoverImage { get; set; }
         public string Description { get; set; }
     }
 

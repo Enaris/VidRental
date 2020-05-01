@@ -17,6 +17,7 @@ namespace VidRental.API.AutoMapper
                 .ForMember(s => s.Images, o => o.Ignore());
             CreateMap<Movie, MovieDetails>();
             CreateMap<Movie, MovieForList>();
+            CreateMap<MovieUpdateRequest, Movie>();
         }
     }
 }

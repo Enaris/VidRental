@@ -14,8 +14,8 @@ namespace VidRental.API.AutoMapper
         {
             CreateMap<Image, ImageDto>()
                 .ReverseMap();
-            CreateMap<MovieImage, ImageDto>()
-                .IncludeMembers(mi => mi.Image);
+            CreateMap<MovieImage, MovieImageDto>()
+                .ForMember(d => d.Url, o => o.MapFrom(s => s.Image.Url));
         }
     }
 }
