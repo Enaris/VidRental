@@ -99,6 +99,7 @@ namespace VidRental.API
             services.AddScoped<IUploadService, UploadService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IDeleteImagesService, DeleteImagesService>();
+            services.AddScoped<ICartridgeService, CartridgeService>();
 
             services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IShopUserRepository, ShopUserRepository>();
@@ -107,6 +108,8 @@ namespace VidRental.API
             services.AddScoped<IMovieRepository, MovieRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
             services.AddScoped<IMovieImageRepository, MovieImageRepository>();
+            services.AddScoped<ICartridgeCopyRepository, CartridgeCopyRepository>();
+            services.AddScoped<IRentalRepository, RentalRepository>();
 
             services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();

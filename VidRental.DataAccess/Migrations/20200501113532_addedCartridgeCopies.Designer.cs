@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VidRental.DataAccess.DataContext;
 
 namespace VidRental.DataAccess.Migrations
 {
     [DbContext(typeof(VidContext))]
-    partial class VidContextModelSnapshot : ModelSnapshot
+    [Migration("20200501113532_addedCartridgeCopies")]
+    partial class addedCartridgeCopies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -208,7 +210,11 @@ namespace VidRental.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("MovieId")
+                    b.Property<string>("MovieId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("MovieId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("RentPrice")
@@ -216,7 +222,7 @@ namespace VidRental.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MovieId");
+                    b.HasIndex("MovieId1");
 
                     b.ToTable("Cartridges");
                 });
@@ -482,9 +488,7 @@ namespace VidRental.DataAccess.Migrations
                 {
                     b.HasOne("VidRental.DataAccess.DbModels.Movie", "Movie")
                         .WithMany("Cartridges")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MovieId1");
                 });
 
             modelBuilder.Entity("VidRental.DataAccess.DbModels.CartridgeCopy", b =>

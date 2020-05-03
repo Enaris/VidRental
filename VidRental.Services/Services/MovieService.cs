@@ -67,32 +67,24 @@ namespace VidRental.Services.Services
             foreach (var m in result)
             {
                 var thumbnail = await MovieImageRepo
-                    .GetAll(i => i.MovieId == m.Id && i.ImageType == MovieImageType.Thumbnail)
+                    .GetAll(i => i.MovieId == m.Id && i.ImageType == MovieImageType.Cover)
                     .Include(i => i.Image)
                     .FirstOrDefaultAsync();
 
                 if (thumbnail != null)
-                {
-                    var thumbnailDto = Mapper.Map<MovieImageDto>(thumbnail);
-                    m.Thumbnail = thumbnailDto;
-                }
+                    m.ThumbnailUrl = thumbnail.Image.Url;
             }
-
-            //result.ToList().ForEach(async m =>
-            //{
-            //    var thumbnail = await ImageMovieRepo
-            //        .GetAll(i => i.MovieId == m.Id && i.ImageType == MovieImageType.Thumbnail)
-            //        .Include(i => i.Image)
-            //        .FirstOrDefaultAsync();
-
-            //    if (thumbnail != null)
-            //    {
-            //        var thumbnailDto = Mapper.Map<MovieImageDto>(thumbnail);
-            //        m.Thumbnail = thumbnailDto;
-            //    }
-            //});
             
             return result;
+        }
+
+        public async Task<IEnumerable<MovieForDropdown>> GetForDropdown()
+        {
+            var movies = await MovieRepo
+                .GetAll()
+                .ToListAsync();
+
+            return Mapper.Map<IEnumerable<MovieForDropdown>>(movies);
         }
 
         public async Task<MovieDetails> GetMovie(string title, DateTime date)

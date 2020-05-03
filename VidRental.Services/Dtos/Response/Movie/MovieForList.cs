@@ -11,7 +11,7 @@ namespace VidRental.Services.Dtos.Response.Movie
         public string Title { get; set; }
         public DateTime RealeaseDate { get; set; }
         public string Director { get; set; }
-        public MovieImageDto Thumbnail { get; set; }
+        public string ThumbnailUrl { get; set; }
         public string Description { get; set; }
     }
 }

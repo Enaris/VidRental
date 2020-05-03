@@ -20,5 +20,6 @@ namespace VidRental.DataAccess.DataContext
         public DbSet<Movie> Movies { get; set; }
         public DbSet<MovieImage> MovieImages { get; set; }
         public DbSet<Cartridge> Cartridges { get; set; }
+        public DbSet<CartridgeCopy> CartridgeCopies { get; set; }
     }
 }

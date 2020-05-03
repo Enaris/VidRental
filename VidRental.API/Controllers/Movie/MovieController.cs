@@ -52,6 +52,14 @@ namespace VidRental.API.Controllers.Movie
             return Ok(ApiResponse<MovieDetails>.Success(movie));
         }
 
+        [HttpGet("dropdown")]
+        public async Task<IActionResult> GetForDropdown()
+        {
+            var movies = await MovieService.GetForDropdown();
+
+            return Ok(ApiResponse<IEnumerable<MovieForDropdown>>.Success(movies));
+        }
+
         [HttpPost("add")]
         public async Task<IActionResult> CreateMovie([FromBody] MovieAddRequest request)
         {

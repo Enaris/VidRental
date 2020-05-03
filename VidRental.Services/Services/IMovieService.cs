@@ -13,5 +13,6 @@ namespace VidRental.Services.Services
         Task<MovieDetails> GetMovie(string title, DateTime date);
         Task<MovieDetails> GetMovie(Guid id, bool noTracking = false);
         Task<bool> UpdateMovie(MovieUpdateRequest request);
+        Task<IEnumerable<MovieForDropdown>> GetForDropdown();
     }
 }

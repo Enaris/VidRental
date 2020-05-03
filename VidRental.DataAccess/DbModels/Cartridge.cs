@@ -10,16 +10,16 @@ namespace VidRental.DataAccess.DbModels
     {
         public Guid Id { get; set; }
         [Required]
+
         public string Language { get; set; }
-        public bool Avaible { get; set; }
         [Column(TypeName = "money")]
         [DataType(DataType.Currency)]
         public decimal RentPrice { get; set; }
         public int DaysToReturn { get; set; }
-        public Image Image { get; set; }
 
-        [Required]
-        public string MovieId { get; set; }
+        public Guid MovieId { get; set; }
         public Movie Movie { get; set; }
+
+        public virtual ICollection<CartridgeCopy> Copies { get; set; }
     }
 }

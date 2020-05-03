@@ -14,9 +14,11 @@ namespace VidRental.API.AutoMapper
         public MovieProfiles()
         {
             CreateMap<MovieAddRequest, Movie>()
-                .ForMember(s => s.Images, o => o.Ignore());
+                .ForMember(d => d.Images, o => o.Ignore());
             CreateMap<Movie, MovieDetails>();
             CreateMap<Movie, MovieForList>();
+            CreateMap<Movie, MovieForDropdown>()
+                .ForMember(d => d.Year, o => o.MapFrom(s => s.RealeaseDate.Year));
             CreateMap<MovieUpdateRequest, Movie>();
         }
     }
