@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VidRental.Services.Dtos.Request;
+using VidRental.Services.Dtos.Response.Image;
 using VidRental.Services.Dtos.Response.Movie;
 
 namespace VidRental.Services.Services
@@ -14,5 +15,7 @@ namespace VidRental.Services.Services
         Task<MovieDetails> GetMovie(Guid id, bool noTracking = false);
         Task<bool> UpdateMovie(MovieUpdateRequest request);
         Task<IEnumerable<MovieForDropdown>> GetForDropdown();
+        Task<MovieImageDto> GetMovieCover(Guid movieId);
+        Task<string> GetMovieCoverUrl(Guid movieId);
     }
 }

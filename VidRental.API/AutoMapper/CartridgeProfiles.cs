@@ -19,6 +19,18 @@ namespace VidRental.API.AutoMapper
             CreateMap<Cartridge, CartridgeDetails>()
                 .ForMember(d => d.MovieTitle, o => o.MapFrom(s => s.Movie.Title));
             CreateMap<CartridgeUpdateRequest, Cartridge>();
+            CreateMap<Cartridge, CartridgeForRentList>()
+                .ForMember(d => d.MovieTitle, o => o.MapFrom(s => s.Movie.Title))
+                .ForMember(d => d.MovieDescription, o => o.MapFrom(s => s.Movie.Description));
+            CreateMap<Cartridge, CartridgeForRent>()
+                .ForMember(d => d.MovieTitle, o => o.MapFrom(s => s.Movie.Title))
+                .ForMember(d => d.MovieDescription, o => o.MapFrom(s => s.Movie.Description))
+                .ForMember(d => d.MovieDirector, o => o.MapFrom(s => s.Movie.Director))
+                .ForMember(d => d.MovieReleaseDate, o => o.MapFrom(s => s.Movie.ReleaseDate))
+                .ForMember(d => d.Images, o => o.MapFrom(s => s.Movie.Images));
+            CreateMap<Cartridge, CartridgeRental>()
+                .ForMember(d => d.MovieTitle, o => o.MapFrom(s => s.Movie.Title))
+                .ForMember(d => d.MovieReleaseYear, o => o.MapFrom(s => s.Movie.ReleaseDate.Year));
         }
     }
 }

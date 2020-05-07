@@ -10,7 +10,7 @@ namespace VidRental.DataAccess.DbModels
         public Guid Id { get; set; }
         [Required]
         public string Title { get; set; }
-        public DateTime RealeaseDate { get; set; }
+        public DateTime ReleaseDate { get; set; }
         public string Director { get; set; }
         public string Description { get; set; }
 

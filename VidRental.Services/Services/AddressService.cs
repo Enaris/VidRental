@@ -25,6 +25,7 @@ namespace VidRental.Services.Services
         public async Task<Address> CreateAddress(AddressAddRequest request)
         {
             var addressToAdd = Mapper.Map<AddressAddRequest, Address>(request);
+            addressToAdd.IsActive = true;
             await AddressRepo.CreateAsync(addressToAdd);
             await AddressRepo.SaveChangesAsync();
             return addressToAdd;

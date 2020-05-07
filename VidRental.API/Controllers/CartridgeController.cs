@@ -66,5 +66,41 @@ namespace VidRental.API.Controllers
 
             return Ok(ApiResponse.Success());
         }
+
+        [HttpGet("rentList")]
+        public async Task<IActionResult> CartridgesForRent()
+        {
+            var result = await CartridgeService.CartridgesForRent();
+
+            return Ok(ApiResponse<IEnumerable<CartridgeForRentList>>.Success(result));
+        }
+
+        [HttpGet("{id}/forRent")]
+        public async Task<IActionResult> CartridgeForRent(Guid id)
+        {
+            var result = await CartridgeService.CartridgeForRent(id);
+
+            if (result == null)
+                return BadRequest(ApiResponse.Failure("Cartridge", "Not found"));
+
+            return Ok(ApiResponse<CartridgeForRent>.Success(result));
+        }
+
+        [HttpGet("{cartridgeId}/rentFormFor/{userId}")]
+        public async Task<IActionResult> CartridgeRentForm(Guid cartridgeId, Guid userId)
+        {
+            var result = await CartridgeService.CartridgeForRentForm(cartridgeId, userId);
+
+            if (result == null)
+                return NotFound(ApiResponse.Failure("Rental", "Cartride does not seem to exist"));
+
+            if (!result.UserCanBorrow)
+                return BadRequest(ApiResponse.Failure("User", "User cannot borrow this cartridge"));
+
+            if (result.Avaible == 0)
+                return BadRequest(ApiResponse.Failure("NoItems", "No avaible cartridge copise"));
+
+            return Ok(ApiResponse<CartridgeRental>.Success(result));
+        }
     }
 }

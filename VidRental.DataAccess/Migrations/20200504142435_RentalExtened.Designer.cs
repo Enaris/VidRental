@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VidRental.DataAccess.DataContext;
 
 namespace VidRental.DataAccess.Migrations
 {
     [DbContext(typeof(VidContext))]
-    partial class VidContextModelSnapshot : ModelSnapshot
+    [Migration("20200504142435_RentalExtened")]
+    partial class RentalExtened
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,9 +170,6 @@ namespace VidRental.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -312,14 +311,8 @@ namespace VidRental.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AddressId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("CartridgeCopyId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("DaysToReturn")
-                        .HasColumnType("int");
 
                     b.Property<string>("Delivery")
                         .IsRequired()
@@ -341,8 +334,6 @@ namespace VidRental.DataAccess.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("CartridgeCopyId");
 
@@ -561,11 +552,6 @@ namespace VidRental.DataAccess.Migrations
 
             modelBuilder.Entity("VidRental.DataAccess.DbModels.Rental", b =>
                 {
-                    b.HasOne("VidRental.DataAccess.DbModels.Address", "Address")
-                        .WithMany("Rentals")
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("VidRental.DataAccess.DbModels.CartridgeCopy", "CartridgeCopy")
                         .WithMany("Rentals")
                         .HasForeignKey("CartridgeCopyId")

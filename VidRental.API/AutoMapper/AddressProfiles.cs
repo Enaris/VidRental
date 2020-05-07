@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VidRental.DataAccess.DbModels;
 using VidRental.Services.Dtos.Request;
+using VidRental.Services.Dtos.Response.Address;
 
 namespace VidRental.API.AutoMapper
 {
@@ -13,6 +14,7 @@ namespace VidRental.API.AutoMapper
         public AddressProfiles()
         {
             CreateMap<AddressAddRequest, Address>();
+            CreateMap<Address, AddressDto>();
         }
     }
 }

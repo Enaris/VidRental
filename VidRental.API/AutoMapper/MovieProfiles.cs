@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VidRental.DataAccess.DbModels;
 using VidRental.Services.Dtos.Request;
+using VidRental.Services.Dtos.Response.Cartridge;
 using VidRental.Services.Dtos.Response.Movie;
 
 namespace VidRental.API.AutoMapper
@@ -18,7 +19,7 @@ namespace VidRental.API.AutoMapper
             CreateMap<Movie, MovieDetails>();
             CreateMap<Movie, MovieForList>();
             CreateMap<Movie, MovieForDropdown>()
-                .ForMember(d => d.Year, o => o.MapFrom(s => s.RealeaseDate.Year));
+                .ForMember(d => d.Year, o => o.MapFrom(s => s.ReleaseDate.Year));
             CreateMap<MovieUpdateRequest, Movie>();
         }
     }

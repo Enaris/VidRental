@@ -14,6 +14,23 @@ namespace VidRental.DataAccess.DataContext
 
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Rental>()
+                .HasOne(r => r.Address)
+                .WithMany(a => a.Rentals)
+                .HasForeignKey(r => r.AddressId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Address>()
+                .HasMany(a => a.Rentals)
+                .WithOne(r => r.Address)
+                .HasForeignKey(r => r.AddressId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            base.OnModelCreating(builder);
+        }
+
         public DbSet<Address> Addresses { get; set; }
         public DbSet<ShopUser> ShopUsers { get; set; }
         public DbSet<ShopEmployee> ShopEmployees { get; set; }

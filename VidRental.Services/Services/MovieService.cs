@@ -90,7 +90,7 @@ namespace VidRental.Services.Services
         public async Task<MovieDetails> GetMovie(string title, DateTime date)
         {
             var movie = await MovieRepo
-                .GetAll(m => m.Title == title && m.RealeaseDate == date)
+                .GetAll(m => m.Title == title && m.ReleaseDate == date)
                 .FirstOrDefaultAsync();
 
             var result = Mapper.Map<MovieDetails>(movie);
@@ -115,5 +115,25 @@ namespace VidRental.Services.Services
             return result;
         }
         
+        public async Task<MovieImageDto> GetMovieCover(Guid movieId)
+        {
+            var cover = await MovieImageRepo
+                .GetAll()
+                .AsNoTracking()
+                .Include(i => i.Image)
+                .FirstOrDefaultAsync(i => i.MovieId == movieId && i.ImageType == MovieImageType.Cover);
+
+            if (cover == null)
+                return null;
+
+            return Mapper.Map<MovieImageDto>(cover);
+        }
+
+        public async Task<string> GetMovieCoverUrl(Guid movieId)
+        {
+            var cover = await GetMovieCover(movieId);
+
+            return cover?.Url;
+        }
     }
 }
