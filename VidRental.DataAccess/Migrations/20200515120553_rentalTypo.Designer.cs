@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VidRental.DataAccess.DataContext;
 
 namespace VidRental.DataAccess.Migrations
 {
     [DbContext(typeof(VidContext))]
-    partial class VidContextModelSnapshot : ModelSnapshot
+    [Migration("20200515120553_rentalTypo")]
+    partial class rentalTypo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -569,13 +571,13 @@ namespace VidRental.DataAccess.Migrations
                     b.HasOne("VidRental.DataAccess.DbModels.CartridgeCopy", "CartridgeCopy")
                         .WithMany("Rentals")
                         .HasForeignKey("CartridgeCopyId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VidRental.DataAccess.DbModels.ShopUser", "ShopUser")
+                    b.HasOne("VidRental.DataAccess.DbModels.ShopUser", "User")
                         .WithMany("Rentals")
                         .HasForeignKey("ShopUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

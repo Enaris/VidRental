@@ -13,6 +13,8 @@
     <Compile Remove="Migrations\20200417134113_StringIdsToGuids.Designer.cs" />
     <Compile Remove="Migrations\20200417134311_StringIdsToGuids.cs" />
     <Compile Remove="Migrations\20200417134311_StringIdsToGuids.Designer.cs" />
+    <Compile Remove="Migrations\20200515121054_rentalfix.cs" />
+    <Compile Remove="Migrations\20200515121054_rentalfix.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

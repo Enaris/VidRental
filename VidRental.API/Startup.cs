@@ -100,6 +100,7 @@ namespace VidRental.API
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IDeleteImagesService, DeleteImagesService>();
             services.AddScoped<ICartridgeService, CartridgeService>();
+            services.AddScoped<IRentalService, RentalService>();
 
             services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IShopUserRepository, ShopUserRepository>();

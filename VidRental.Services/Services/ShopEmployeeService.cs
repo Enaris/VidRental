@@ -25,6 +25,31 @@ namespace VidRental.Services.Services
         public IShopEmployeeRepository ShopEmployeeRepo { get; }
         public IMapper Mapper { get; }
 
+        public async Task<EmployeeForListFlat> GetEmployee(Guid id)
+        {
+            var employeeDb = await ShopEmployeeRepo
+                .GetAll()
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (employeeDb == null)
+                return null;
+
+            return Mapper.Map<EmployeeForListFlat>(employeeDb);
+        }
+
+        public async Task<EmployeeForListFlat> GetEmployeeByAspUserId(string userId)
+        {
+            var employeeDb = await ShopEmployeeRepo
+                .GetAll()
+                .FirstOrDefaultAsync(e => e.UserId == userId);
+
+            if (employeeDb == null)
+                return null;
+
+            return Mapper.Map<EmployeeForListFlat>(employeeDb);
+        }
+
+
         public async Task AddEmployee(EmployeeAddRequest addRequest)
         {
             var newShopUser = Mapper.Map<ShopEmployee>(addRequest);
@@ -38,7 +63,7 @@ namespace VidRental.Services.Services
                 .GetAll()
                 .FirstOrDefaultAsync(e => e.Id == employeeId);
 
-            if (employeeId == null)
+            if (employeeDb == null)
                 return false;
 
             employeeDb.IsActive = isActive;
@@ -61,7 +86,10 @@ namespace VidRental.Services.Services
 
         public async Task<IEnumerable<EmployeeForListFlat>> GetAll()
         {
-            var employees = await ShopEmployeeRepo.GetWithAspUser().ToListAsync();
+            var employees = await ShopEmployeeRepo
+                .GetWithAspUser()
+                .Where(e => e.User.UserName != "admin@vidRental.com")
+                .ToListAsync();
 
             var result = Mapper.Map<IEnumerable<EmployeeForListFlat>>(employees);
 

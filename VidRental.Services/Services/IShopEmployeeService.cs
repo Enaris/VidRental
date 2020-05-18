@@ -13,5 +13,7 @@ namespace VidRental.Services.Services
         Task<bool> Activate(Guid employeeId);
         Task<bool> Deactivate(Guid employeeId);
         Task<bool> SetIsActive(Guid employeeId, bool isActive);
+        Task<EmployeeForListFlat> GetEmployee(Guid id);
+        Task<EmployeeForListFlat> GetEmployeeByAspUserId(string userId);
     }
 }

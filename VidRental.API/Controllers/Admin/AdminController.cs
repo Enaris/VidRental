@@ -10,6 +10,7 @@ using VidRental.DataAccess.DbModels;
 using VidRental.DataAccess.Roles;
 using VidRental.Services.Dtos.Request;
 using VidRental.Services.Dtos.Response.Employee;
+using VidRental.Services.Dtos.Response.Rental;
 using VidRental.Services.Dtos.Response.User;
 using VidRental.Services.ResponseWrapper;
 using VidRental.Services.Services;
@@ -24,18 +25,21 @@ namespace VidRental.API.Controllers.Admin
             IShopEmployeeService shopEmployeeService,
             IMapper mapper, 
             UserManager<User> userManager,
-            IAdminService adminService)
+            IAdminService adminService, 
+            IRentalService rentalService)
         {
             ShopEmployeeService = shopEmployeeService;
             Mapper = mapper;
             UserManager = userManager;
             AdminService = adminService;
+            RentalService = rentalService;
         }
 
         public IShopEmployeeService ShopEmployeeService { get; }
         public IMapper Mapper { get; }
         public UserManager<User> UserManager { get; }
-        public IAdminService AdminService { get; }
+        private IAdminService AdminService { get; }
+        private IRentalService RentalService { get; }
 
         [HttpGet("employees")]
         public async Task<IActionResult> Get()
@@ -58,6 +62,36 @@ namespace VidRental.API.Controllers.Admin
                 return BadRequest(ApiResponse.Failure("Api", "Something went wrong"));
 
             return Ok(ApiResponse<UserBaseInfo>.Success(result));
+        }
+
+        [HttpGet("allRentals")]
+        public async Task<IActionResult> GetAllRentals()
+        {
+            var rentals = await RentalService.GetAllRentals();
+
+            return Ok(ApiResponse<IEnumerable<RentalForAdminList>>.Success(rentals));
+        }
+
+        [HttpPost("employee/{employeeId}/fire")]
+        public async Task<IActionResult> FireEmployee(Guid employeeId)
+        {
+            var result = await ShopEmployeeService.Deactivate(employeeId);
+
+            if (!result)
+                return BadRequest(ApiResponse.Failure("Fire", "Employee does not seem to exist"));
+
+            return Ok(ApiResponse.Success());
+        }
+
+        [HttpPost("employee/{employeeId}/activate")]
+        public async Task<IActionResult> ActivateEmployee(Guid employeeId)
+        {
+            var result = await ShopEmployeeService.Activate(employeeId);
+
+            if (!result)
+                return BadRequest(ApiResponse.Failure("Activate", "Employee does not seem to exist"));
+
+            return Ok(ApiResponse.Success());
         }
     }
 }

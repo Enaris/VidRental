@@ -22,10 +22,34 @@ namespace VidRental.DataAccess.DataContext
                 .HasForeignKey(r => r.AddressId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<Rental>()
+                .HasOne(r => r.ShopUser)
+                .WithMany(su => su.Rentals)
+                .HasForeignKey(r => r.ShopUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Rental>()
+                .HasOne(r => r.CartridgeCopy)
+                .WithMany(cc => cc.Rentals)
+                .HasForeignKey(r => r.CartridgeCopyId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.Entity<Address>()
                 .HasMany(a => a.Rentals)
                 .WithOne(r => r.Address)
                 .HasForeignKey(r => r.AddressId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<ShopUser>()
+                .HasMany(su => su.Rentals)
+                .WithOne(r => r.ShopUser)
+                .HasForeignKey(r => r.ShopUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<CartridgeCopy>()
+                .HasMany(cc => cc.Rentals)
+                .WithOne(r => r.CartridgeCopy)
+                .HasForeignKey(r => r.CartridgeCopyId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             base.OnModelCreating(builder);

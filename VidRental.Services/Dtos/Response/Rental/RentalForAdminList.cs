@@ -4,7 +4,7 @@ using System.Text;
 
 namespace VidRental.Services.Dtos.Response.Rental
 {
-    public class RentalBaseInfo
+    public class RentalForAdminList
     {
         public Guid Id { get; set; }
 
@@ -17,6 +17,11 @@ namespace VidRental.Services.Dtos.Response.Rental
         public string MovieLanguage { get; set; }
         public int DaysToReturn { get; set; }
         public decimal RentPrice { get; set; }
+
+        public string UserFirstName { get; set; }
+        public string UserLastName { get; set; }
+        public string UserPhone { get; set; }
+
 
         public Guid UserId { get; set; }
         public Guid CartridgeCopyId { get; set; }

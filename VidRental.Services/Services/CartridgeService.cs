@@ -176,7 +176,7 @@ namespace VidRental.Services.Services
                 return null;
 
             var unsettledRentals = await RentalRepo
-                .GetAll(r => r.UserId == userDb.Id)
+                .GetAll(r => r.ShopUserId == userDb.Id)
                 .Where(r => r.Returned == null)
                 .ToListAsync();
 

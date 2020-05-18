@@ -37,7 +37,8 @@ namespace VidRental.API.Controllers.Auth
             IConfiguration configuration, 
             IMapper mapper,
             ITokenService tokenService,
-            IShopUserService shopUserService)
+            IShopUserService shopUserService, 
+            IShopEmployeeService shopEmployeeService)
         {
             AuthService = authService;
             UsersService = usersService;
@@ -48,17 +49,19 @@ namespace VidRental.API.Controllers.Auth
             Mapper = mapper;
             TokenService = tokenService;
             ShopUserService = shopUserService;
+            ShopEmployeeService = shopEmployeeService;
         }
 
-        public IAuthService AuthService { get; }
-        public IUsersService UsersService { get; }
-        public IAddressService AddressService { get; }
-        public UserManager<User> UserManager { get; }
-        public SignInManager<User> SignInManager { get; }
-        public IConfiguration Configuration { get; }
-        public IMapper Mapper { get; }
-        public ITokenService TokenService { get; }
-        public IShopUserService ShopUserService { get; }
+        private IAuthService AuthService { get; }
+        private IUsersService UsersService { get; }
+        private IAddressService AddressService { get; }
+        private UserManager<User> UserManager { get; }
+        private SignInManager<User> SignInManager { get; }
+        private IConfiguration Configuration { get; }
+        private IMapper Mapper { get; }
+        private ITokenService TokenService { get; }
+        private IShopUserService ShopUserService { get; }
+        private IShopEmployeeService ShopEmployeeService { get; }
 
         [HttpPost("register", Name = AuthNames.Register)]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
@@ -98,6 +101,10 @@ namespace VidRental.API.Controllers.Auth
             
             if (!loginResult.Succeeded)
                 return BadRequest(ApiResponse.Failure("Login", this.BadLoginMessage()));
+
+            var employee = await ShopEmployeeService.GetEmployeeByAspUserId(userDb.Id);
+            if (employee != null && !employee.IsActive)
+                return BadRequest(ApiResponse.Failure("Employee", "Your account is deactivated. You cannot login."));
 
             var userBaseInfo = await UsersService.GetUserBaseInfo(userDb.Id);
 

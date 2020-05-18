@@ -23,8 +23,8 @@ namespace VidRental.DataAccess.DbModels
 
         public CartridgeCopy CartridgeCopy { get; set; }
         public Guid CartridgeCopyId { get; set; }
-        public ShopUser User { get; set; }
-        public Guid UserId { get; set; }
+        public ShopUser ShopUser { get; set; }
+        public Guid ShopUserId { get; set; }
         public Address Address { get; set; }
         public Guid? AddressId { get; set; }
     }

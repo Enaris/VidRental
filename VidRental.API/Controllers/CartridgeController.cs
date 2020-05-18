@@ -17,14 +17,20 @@ namespace VidRental.API.Controllers
     {
         public CartridgeController(
             ICartridgeService cartridgeService,
-            IMovieService movieService)
+            IMovieService movieService, 
+            IShopUserService shopUserService, 
+            IRentalService rentalService)
         {
             CartridgeService = cartridgeService;
             MovieService = movieService;
+            ShopUserService = shopUserService;
+            RentalService = rentalService;
         }
 
         private ICartridgeService CartridgeService { get; }
         private IMovieService MovieService { get; }
+        private IShopUserService ShopUserService { get; }
+        private IRentalService RentalService { get; }
 
         [HttpPost]
         public async Task<IActionResult> Create(CartridgeAddRequest request)
@@ -101,6 +107,28 @@ namespace VidRental.API.Controllers
                 return BadRequest(ApiResponse.Failure("NoItems", "No avaible cartridge copise"));
 
             return Ok(ApiResponse<CartridgeRental>.Success(result));
+        }
+
+        [HttpPost("{cartridgeId}/rent/{userId}")]
+        public async Task<IActionResult> RentCartridge(Guid cartridgeId, Guid userId, [FromBody] CartridgeRentRequest request)
+        {
+            var canUserRent = await ShopUserService.CanUserRent(userId);
+
+            if (canUserRent == null)
+                return BadRequest(ApiResponse.Failure("Null", "User does not seem to exist"));
+
+            if (!canUserRent.Value)
+                return BadRequest(ApiResponse.Failure("CantRent", "User cannot rent"));
+
+            var rentalResult = await RentalService.RentCartridge(cartridgeId, userId, request);
+
+            if (rentalResult == null)
+                return BadRequest(ApiResponse.Failure("Null", "Cartridge or selected address does not seemt to exist"));
+
+            if (!rentalResult.Value)
+                return BadRequest(ApiResponse.Failure("NoCopies", "No copies avaible"));
+
+            return Ok(ApiResponse.Success());
         }
     }
 }
