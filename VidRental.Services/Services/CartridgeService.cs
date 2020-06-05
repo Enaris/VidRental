@@ -46,24 +46,41 @@ namespace VidRental.Services.Services
             var cartridgeToAdd = Mapper.Map<Cartridge>(request);
             await CartridgeRepo.CreateAsync(cartridgeToAdd);
             await CartridgeRepo.SaveChangesAsync();
+            var cartridgeDb = await CartridgeRepo
+                .GetAll()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == cartridgeToAdd.Id);
 
             var copiesAmount = request.AvaibleAmount + request.UnavaibleAmount;
 
             if (copiesAmount == 0)
                 return;
 
-            var copies = new List<CartridgeCopy>(copiesAmount);
-            for (int i = 0; i < copiesAmount; ++i)
+            await AddCopies(copiesAmount, request.AvaibleAmount, cartridgeDb.Id);
+        }
+
+        private async Task AddCopies(int amountAll, int amountAvaible, Guid catridgeId)
+        {
+            var copies = new List<CartridgeCopy>(amountAll);
+
+            for (int i = 0; i < amountAll; ++i)
             {
                 copies.Add(new CartridgeCopy
                 {
-                    CartridgeId = cartridgeToAdd.Id,
-                    Avaible = i < request.AvaibleAmount
+                    CartridgeId = catridgeId,
+                    Avaible = i < amountAvaible
                 });
             }
 
-            await CartridgeCopyRepo.AddRangeAsync(copies);
-            await CartridgeCopyRepo.SaveChangesAsync();
+            //var tasks = new List<Task>(amountAll);
+            foreach (var c in copies)
+            {
+                await CartridgeCopyRepo.CreateAsync(c);
+                await CartridgeCopyRepo.SaveChangesAsync();
+                //tasks.Add(CartridgeCopyRepo.CreateAsync(c));
+            }
+            //await Task.WhenAll(tasks);
+            //await CartridgeCopyRepo.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<CartridgeForList>> GetForList()
@@ -99,14 +116,57 @@ namespace VidRental.Services.Services
             return cartridge;
         }
 
-        public async Task<bool> UpdateCartridge(CartridgeUpdateRequest request)
+        public async Task<CartridgeEditDetails> GetEditDetails(Guid id)
         {
-            var cartridgeDb = Mapper.Map<Cartridge>(request);
+            var cartridgeDb = await CartridgeRepo
+                .GetAll()
+                .Include(c => c.Copies)
+                .Include(c => c.Movie)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            var cartridge = Mapper.Map<CartridgeEditDetails>(cartridgeDb);
+            cartridge.CopiesRented = await RentalRepo
+                .GetAll()
+                .Where(r => r.Returned != null && cartridgeDb.Copies.Select(c => c.Id).Contains(r.CartridgeCopyId))
+                .CountAsync();
+            cartridge.CopiesAvaible = cartridgeDb.Copies.Count(c => c.Avaible);
+            cartridge.CopiesUnavaible = cartridgeDb.Copies.Count(c => !c.Avaible);
+            cartridge.MaxCopiesToMakeAvaible = cartridge.CopiesUnavaible - cartridge.CopiesRented;
+            cartridge.MaxCopiesToMakeUnavaible = cartridge.CopiesAvaible;
+
+            return cartridge;
+        }
+
+        public async Task<bool> UpdateCartridge(Guid cartridgeId, CartridgeUpdateRequest request)
+        {
+            var cartridgeDb = await CartridgeRepo
+                .GetAll()
+                .FirstOrDefaultAsync(c => c.Id == cartridgeId);
+
             if (cartridgeDb == null)
                 return false;
 
             Mapper.Map(request, cartridgeDb);
 
+            await MakeCopiesAvaOrUnava(request.CopiesToMakeAva, true, cartridgeDb.Id);
+            await MakeCopiesAvaOrUnava(request.CopiesToMakeUnava, false, cartridgeDb.Id);
+
+            var copiesAmount = request.CopiesToAddAva + request.CopiesToAddUnava;
+
+            var copies = new List<CartridgeCopy>(copiesAmount);
+            for (int i = 0; i < copiesAmount; ++i)
+            {
+                copies.Add(new CartridgeCopy
+                {
+                    CartridgeId = cartridgeDb.Id,
+                    Avaible = i < request.CopiesToAddAva
+                });
+            }
+
+            CartridgeCopyRepo.AddRange(copies);
+
+            await CartridgeRepo.SaveChangesAsync();
+            
             CartridgeRepo.Update(cartridgeDb);
             await CartridgeRepo.SaveChangesAsync();
             return true;
@@ -221,6 +281,20 @@ namespace VidRental.Services.Services
             result.Addresses = Mapper.Map<IEnumerable<AddressDto>>(userAddressesDb);
 
             return result;
+        }
+    
+        private async Task MakeCopiesAvaOrUnava(int amount, bool val, Guid cartridgeId)
+        {
+            var copies = await CartridgeCopyRepo
+                .GetAll(c => c.CartridgeId == cartridgeId)
+                .ToListAsync();
+
+            var copiesAva = copies.Where(c => c.Avaible == !val).ToList();
+            for (int i = 0; i < amount; ++i)
+            {
+                copiesAva[i].Avaible = val;
+            }
+            await CartridgeCopyRepo.SaveChangesAsync();
         }
     }
 }

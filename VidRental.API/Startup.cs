@@ -49,7 +49,7 @@ namespace VidRental.API
             services
                 .AddDbContext<VidContext>(o => 
                     o.UseSqlServer(Configuration.GetConnectionString("defaultDb"), 
-                    o => o.MigrationsAssembly(migrationAssembly)));
+                    o => o.MigrationsAssembly(migrationAssembly)), ServiceLifetime.Transient);
 
             services.AddDefaultIdentity<User>(
                 options => 

@@ -82,6 +82,7 @@ namespace VidRental.Services.Services
         {
             var movies = await MovieRepo
                 .GetAll()
+                .AsNoTracking()
                 .ToListAsync();
 
             return Mapper.Map<IEnumerable<MovieForDropdown>>(movies);

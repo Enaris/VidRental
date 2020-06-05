@@ -35,10 +35,10 @@ namespace VidRental.Services.Services
         public async Task AddMovieImages(IEnumerable<string> images, Guid movieId)
         {
             var imagesToAdd = images.Select(i => new Image { Url = i });
-            await ImageRepo.AddRangeAsync(imagesToAdd);
+            ImageRepo.AddRange(imagesToAdd);
             await ImageRepo.SaveChangesAsync();
             var movieImages = imagesToAdd.Select(i => new MovieImage { ImageId = i.Id, MovieId = movieId, ImageType = MovieImageType.Image });
-            await MovieImageRepo.AddRangeAsync(movieImages);
+            MovieImageRepo.AddRange(movieImages);
             await MovieImageRepo.SaveChangesAsync();
         }
 
@@ -66,7 +66,7 @@ namespace VidRental.Services.Services
                 movieImages.Add(movieImage);
             }
 
-            await MovieImageRepo.AddRangeAsync(movieImages);
+            MovieImageRepo.AddRange(movieImages);
             await MovieImageRepo.SaveChangesAsync();
         }
 

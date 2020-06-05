@@ -6,12 +6,12 @@ namespace VidRental.Services.Dtos.Request
 {
     public class CartridgeUpdateRequest
     {
-        public Guid Id { get; set; }
+        public int CopiesToMakeAva { get; set; }
+        public int CopiesToMakeUnava { get; set; }
+        public int CopiesToAddAva { get; set; }
+        public int CopiesToAddUnava { get; set; }
         public string Language { get; set; }
         public int DaysToReturn { get; set; }
-        public int CopiesAvaible { get; set; }
-        public int CopiesUnavaible { get; set; }
-        public int CopiesRented { get; set; }
         public decimal RentPrice { get; set; }
     }
 }

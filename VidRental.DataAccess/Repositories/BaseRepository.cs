@@ -27,9 +27,9 @@ namespace VidRental.DataAccess.Repositories
             return _context.Set<T>().Where(predicate);
         }
 
-        public virtual async Task AddRangeAsync(IEnumerable<T> items)
+        public virtual void AddRange(IEnumerable<T> items)
         {
-            await _context.Set<T>().AddRangeAsync(items);
+            _context.Set<T>().AddRange(items);
         }
 
         public virtual async Task CreateAsync(T newItem)

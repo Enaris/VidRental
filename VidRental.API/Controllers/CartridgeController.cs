@@ -54,21 +54,21 @@ namespace VidRental.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var result = await CartridgeService.GetCartridge(id);
+            var result = await CartridgeService.GetEditDetails(id);
 
             if (result == null)
                 return NotFound(ApiResponse.Failure("Cartridge", "Not Found"));
 
-            return Ok(ApiResponse<CartridgeDetails>.Success(result));
+            return Ok(ApiResponse<CartridgeEditDetails>.Success(result));
         }
 
         [HttpPost("{id}/update")]
-        public async Task<IActionResult> UpdateCartridge(CartridgeUpdateRequest request)
+        public async Task<IActionResult> UpdateCartridge(Guid id, CartridgeUpdateRequest request)
         {
-            var result = await CartridgeService.UpdateCartridge(request);
+            var result = await CartridgeService.UpdateCartridge(id, request);
 
             if (!result)
-                return NotFound(ApiResponse.Failure("Update", $"Cartridge with id ${request.Id} does not exist"));
+                return NotFound(ApiResponse.Failure("Update", $"Cartridge with id ${id} does not exist"));
 
             return Ok(ApiResponse.Success());
         }

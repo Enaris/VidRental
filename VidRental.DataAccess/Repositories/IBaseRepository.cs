@@ -8,7 +8,7 @@ namespace VidRental.DataAccess.Repositories
 {
     public interface IBaseRepository<T> where T : class
     {
-        Task AddRangeAsync(IEnumerable<T> items);
+        void AddRange(IEnumerable<T> items);
         Task CreateAsync(T newItem);
         void Delete(T item);
         IQueryable<T> GetAll();

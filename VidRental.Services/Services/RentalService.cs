@@ -64,7 +64,10 @@ namespace VidRental.Services.Services
             if (request.Delivery == collectionInPerson)
                 address = null;
             else if (request.AddAddress)
+            {
+                request.NewAddress.UserId = userId.ToString();
                 address = await AddressService.CreateAddress(request.NewAddress);
+            }
             else
             {
                 address = await AddressRepo
@@ -121,6 +124,7 @@ namespace VidRental.Services.Services
                 rentalBaseInfo.UserFirstName = r.ShopUser.User.FirstName;
                 rentalBaseInfo.UserLastName = r.ShopUser.User.LastName;
                 rentalBaseInfo.UserPhone = r.ShopUser.User.PhoneNumber;
+                rentalBaseInfo.CopyAvaible = r.CartridgeCopy.Avaible;
                 return rentalBaseInfo;
             });
 
@@ -132,11 +136,19 @@ namespace VidRental.Services.Services
             var rental = await RentalRepo
                 .GetAll()
                 .FirstOrDefaultAsync(r => r.Id == rentalId);
+            var cartridgeCopy = await CartridgeCopyRepo
+                .GetAll()
+                .FirstOrDefaultAsync(cc => cc.Id == rental.CartridgeCopyId);
 
             if (rental == null)
                 return false;
 
             rental.Returned = request.Date;
+            if (request.Date == null)
+                cartridgeCopy.Avaible = false;
+            else
+                cartridgeCopy.Avaible = true;
+            CartridgeCopyRepo.Update(cartridgeCopy);
             await RentalRepo.SaveChangesAsync();
 
             return true;
