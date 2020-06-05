@@ -16,19 +16,16 @@ namespace VidRental.Services.Services
     public class ShopUserService : IShopUserService
     {
         public ShopUserService(
-            UserManager<User> userManager,
             IShopUserRepository shopUserRepo,
             IMapper mapper,
             IRentalRepository rentalRepo
             )
         {
-            UserManager = userManager;
             ShopUserRepo = shopUserRepo;
             Mapper = mapper;
             RentalRepo = rentalRepo;
         }
 
-        private UserManager<User> UserManager { get; }
         private IShopUserRepository ShopUserRepo { get; }
         private IMapper Mapper { get; }
         private IRentalRepository RentalRepo { get; }
@@ -56,6 +53,17 @@ namespace VidRental.Services.Services
                 .ToListAsync();
 
             if (unsettledRentals.Count >= 3)
+                return false;
+
+            if (unsettledRentals.Any(r => DateTime.UtcNow > r.Rented.AddDays(r.DaysToReturn)))
+                return false;
+
+            return true;
+        }
+
+        public static bool CanRent(IEnumerable<Rental> unsettledRentals)
+        {
+            if (unsettledRentals.Count() >= 3)
                 return false;
 
             if (unsettledRentals.Any(r => DateTime.UtcNow > r.Rented.AddDays(r.DaysToReturn)))
