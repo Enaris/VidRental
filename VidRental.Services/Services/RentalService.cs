@@ -106,7 +106,8 @@ namespace VidRental.Services.Services
             };
 
             copy.Avaible = false;
-            CartridgeCopyRepo.Update(copy);
+            
+            await CartridgeCopyRepo.SaveChangesAsync();
             await RentalRepo.CreateAsync(rental);
             await RentalRepo.SaveChangesAsync();
             return true;
