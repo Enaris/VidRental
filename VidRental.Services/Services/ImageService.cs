@@ -10,6 +10,9 @@ using VidRental.Services.Dtos.Response.Images;
 
 namespace VidRental.Services.Services
 {
+    /// <summary>
+    /// Contains logic for image operations
+    /// </summary>
     public class ImageService : IImageService
     {
         public ImageService(IImageRepository imageRepo,
@@ -22,6 +25,12 @@ namespace VidRental.Services.Services
         private IImageRepository ImageRepo { get; }
         private IMovieImageRepository MovieImageRepo { get; }
 
+        /// <summary>
+        /// Adds image to given movie
+        /// </summary>
+        /// <param name="url">Image location</param>
+        /// <param name="movieId">Movie id</param>
+        /// <param name="type">Image type</param>
         public async Task AddMovieImage(string url, Guid movieId, MovieImageTypeEnum type)
         {
             var image = new Image { Url = url };
@@ -32,6 +41,11 @@ namespace VidRental.Services.Services
             await MovieImageRepo.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Adds images to given movie
+        /// </summary>
+        /// <param name="images">List of image paths</param>
+        /// <param name="movieId">Movie id</param>
         public async Task AddMovieImages(IEnumerable<string> images, Guid movieId)
         {
             var imagesToAdd = images.Select(i => new Image { Url = i });
@@ -42,6 +56,11 @@ namespace VidRental.Services.Services
             await MovieImageRepo.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Adds images to given movie
+        /// </summary>
+        /// <param name="images">List of image upload results</param>
+        /// <param name="movieId">Movie id</param>
         public async Task AddMovieImages(IEnumerable<UploadedImage> images, Guid movieId)
         {
             var imagesToAdd = images.Select(i => new Image { Url = i.Filepath }).ToList();

@@ -33,6 +33,11 @@ namespace VidRental.Services.Services
         public UserManager<User> UserManager { get; }
         public IMapper Mapper { get; }
 
+        /// <summary>
+        /// Generates jwt token for given user
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <returns>Jwt token as string</returns>
         public async Task<string> GenerateJwtToken(User user)
         {
             var claims = new List<Claim>
@@ -65,6 +70,11 @@ namespace VidRental.Services.Services
             return tokenHanlder.WriteToken(token);
         }
 
+        /// <summary>
+        /// Refreshes jwt token
+        /// </summary>
+        /// <param name="token">Old token</param>
+        /// <returns>New token</returns>
         public async Task<RefreshTokenResult> RefreshToken(string token)
         {
             var tokenValidationParams = new TokenValidationParameters

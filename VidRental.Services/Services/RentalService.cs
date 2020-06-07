@@ -12,6 +12,9 @@ using VidRental.Services.Dtos.Response.Rental;
 
 namespace VidRental.Services.Services
 {
+    /// <summary>
+    /// Contains logic for managing Rental Entity
+    /// </summary>
     public class RentalService : IRentalService
     {
         public RentalService(
@@ -42,6 +45,14 @@ namespace VidRental.Services.Services
 
         private const string collectionInPerson = "CollectionInPerson";
 
+        /// <summary>
+        /// Rents 1st of avaible catridge copies by given cartridge id to given user
+        /// Adds new Rental to database
+        /// </summary>
+        /// <param name="cartridgeId">Cartridge id</param>
+        /// <param name="userId">User that wants to rent id</param>
+        /// <param name="request">Rental request</param>
+        /// <returns>Null if cartridge or user is not found. True if user could rent given cartridge, false otherwise.</returns>
         public async Task<bool?> RentCartridge(Guid cartridgeId, Guid userId, CartridgeRentRequest request)
         {
             var cartridge = await CartridgeRepo
@@ -101,6 +112,10 @@ namespace VidRental.Services.Services
             return true;
         }
     
+        /// <summary>
+        /// Gets all rentals
+        /// </summary>
+        /// <returns>List of rentals</returns>
         public async Task<IEnumerable<RentalForAdminList>> GetAllRentals()
         {
             var rentals = await RentalRepo
@@ -131,6 +146,12 @@ namespace VidRental.Services.Services
             return result;
         }
     
+        /// <summary>
+        /// Updates return date of given rental 
+        /// </summary>
+        /// <param name="rentalId">Rental id</param>
+        /// <param name="request">Update request with date to set</param>
+        /// <returns>True if successful</returns>
         public async Task<bool> UpdateReturnDate(Guid rentalId, RentalUpdateDateRequest request)
         {
             var rental = await RentalRepo

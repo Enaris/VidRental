@@ -14,6 +14,9 @@ using VidRental.DataAccess.Roles;
 
 namespace VidRental.Services.Services
 {
+    /// <summary>
+    /// Contains logic for authorization and authenctication
+    /// </summary>
     public class AuthService : IAuthService
     {
         public AuthService(
@@ -33,6 +36,12 @@ namespace VidRental.Services.Services
         public IMapper Mapper { get; }
         public IUsersService UsersService { get; }
 
+        /// <summary>
+        /// Allows to register new user
+        /// </summary>
+        /// <param name="request">New user add request</param>
+        /// <param name="role">Role new user will have</param>
+        /// <returns>Created user base info</returns>
         public async Task<UserBaseInfo> Register(RegisterRequest request, RolesEnum role)
         {
             var userToCreate = Mapper.Map<RegisterRequest, User>(request);
@@ -41,6 +50,13 @@ namespace VidRental.Services.Services
             return await Register(userToCreate, request.Password, role);
         }
 
+        /// <summary>
+        /// Allows to register new user
+        /// </summary>
+        /// <param name="user">New User (Entity)</param>
+        /// <param name="password">New User password</param>
+        /// <param name="role">Role new user will have</param>
+        /// <returns></returns>
         public async Task<UserBaseInfo> Register(User user, string password, RolesEnum role)
         {
             var created = await UserManager.CreateAsync(user, password);

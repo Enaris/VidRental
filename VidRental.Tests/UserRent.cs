@@ -1,12 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using VidRental.DataAccess.DataContext;
 using VidRental.DataAccess.DbModels;
-using VidRental.DataAccess.Repositories;
 using VidRental.Services.Services;
 using Xunit;
 
@@ -72,8 +67,8 @@ namespace VidRental.Tests
         {
             var rentals = new List<Rental>
             {
-                new Rental(),
-                new Rental()
+                new Rental{ Rented = new DateTime(3000,1,1) },
+                new Rental{ Rented = new DateTime(3000,1,1) }
             };
 
             var result = ShopUserService.CanRent(rentals);

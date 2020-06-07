@@ -9,6 +9,11 @@ namespace VidRental.DataAccess.DataContext
 {
     public class VidContext : IdentityDbContext<User>
     {
+        public VidContext()
+        {
+
+        }
+
         public VidContext(DbContextOptions<VidContext> options) : base(options)
         {
 

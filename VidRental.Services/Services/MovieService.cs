@@ -13,6 +13,9 @@ using VidRental.Services.Dtos.Response.Movie;
 
 namespace VidRental.Services.Services
 {
+    /// <summary>
+    /// Contains logic for Movie Entity manipulations
+    /// </summary>
     public class MovieService : IMovieService
     {
         public MovieService(IMovieRepository movieRepo,
@@ -56,6 +59,10 @@ namespace VidRental.Services.Services
             return true;
         }
 
+        /// <summary>
+        /// Gets all movies
+        /// </summary>
+        /// <returns>List of movies for list/table</returns>
         public async Task<IEnumerable<MovieForList>> GetMovies()
         {
             var movies = await MovieRepo
@@ -78,6 +85,10 @@ namespace VidRental.Services.Services
             return result;
         }
 
+        /// <summary>
+        /// Gets movies for dropdown
+        /// </summary>
+        /// <returns>List of simple movie data objects</returns>
         public async Task<IEnumerable<MovieForDropdown>> GetForDropdown()
         {
             var movies = await MovieRepo
@@ -88,6 +99,12 @@ namespace VidRental.Services.Services
             return Mapper.Map<IEnumerable<MovieForDropdown>>(movies);
         }
 
+        /// <summary>
+        /// Gets movie by title and release date
+        /// </summary>
+        /// <param name="title">Movie title</param>
+        /// <param name="date">Movie release date</param>
+        /// <returns>Movie details</returns>
         public async Task<MovieDetails> GetMovie(string title, DateTime date)
         {
             var movie = await MovieRepo
@@ -99,6 +116,12 @@ namespace VidRental.Services.Services
             return result;
         }
 
+        /// <summary>
+        /// Gets movie by id
+        /// </summary>
+        /// <param name="id">Movie id</param>
+        /// <param name="noTracking">Should movie be tacked</param>
+        /// <returns>Movie details</returns>
         public async Task<MovieDetails> GetMovie(Guid id, bool noTracking = false)
         {
             var movies = MovieRepo
@@ -116,6 +139,11 @@ namespace VidRental.Services.Services
             return result;
         }
         
+        /// <summary>
+        /// Get movie cover by movie id
+        /// </summary>
+        /// <param name="movieId">Movie id</param>
+        /// <returns>Movie cover</returns>
         public async Task<MovieImageDto> GetMovieCover(Guid movieId)
         {
             var cover = await MovieImageRepo
@@ -130,6 +158,11 @@ namespace VidRental.Services.Services
             return Mapper.Map<MovieImageDto>(cover);
         }
 
+        /// <summary>
+        /// Gets movie cover - path only 
+        /// </summary>
+        /// <param name="movieId">Movie id</param>
+        /// <returns>Cover location</returns>
         public async Task<string> GetMovieCoverUrl(Guid movieId)
         {
             var cover = await GetMovieCover(movieId);

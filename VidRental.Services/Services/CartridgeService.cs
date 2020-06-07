@@ -13,6 +13,9 @@ using VidRental.Services.Dtos.Response.Cartridge;
 
 namespace VidRental.Services.Services
 {
+    /// <summary>
+    /// Contains logic related to managing Cartridges
+    /// </summary>
     public class CartridgeService : ICartridgeService
     {
         public CartridgeService(
@@ -41,6 +44,10 @@ namespace VidRental.Services.Services
         private IRentalRepository RentalRepo { get; }
         private IAddressRepository AddressRepo { get; }
 
+        /// <summary>
+        /// Allows to add new cartridge
+        /// </summary>
+        /// <param name="request">Cartridge add request</param>
         public async Task AddCartridge(CartridgeAddRequest request)
         {
             var cartridgeToAdd = Mapper.Map<Cartridge>(request);
@@ -59,6 +66,12 @@ namespace VidRental.Services.Services
             await AddCopies(copiesAmount, request.AvaibleAmount, cartridgeDb.Id);
         }
 
+        /// <summary>
+        /// Allows to add copies of given cartridge
+        /// </summary>
+        /// <param name="amountAll">Amout of all copies to add</param>
+        /// <param name="amountAvaible">Amount of copies avaible. Rest will be unavaible.</param>
+        /// <param name="catridgeId">Cartridge id</param>
         private async Task AddCopies(int amountAll, int amountAvaible, Guid catridgeId)
         {
             var copies = new List<CartridgeCopy>(amountAll);
@@ -83,6 +96,10 @@ namespace VidRental.Services.Services
             //await CartridgeCopyRepo.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Gets cartridges for list/table display
+        /// </summary>
+        /// <returns>List of cartridges</returns>
         public async Task<IEnumerable<CartridgeForList>> GetForList()
         {
             var cartridgesDb = await CartridgeRepo
@@ -102,6 +119,11 @@ namespace VidRental.Services.Services
             return cartridges;
         }
 
+        /// <summary>
+        /// Gets cartridge by id
+        /// </summary>
+        /// <param name="id">Cartridge id</param>
+        /// <returns>Cartridge with details</returns>
         public async Task<CartridgeDetails> GetCartridge(Guid id)
         {
             var cartridgeDb = await CartridgeRepo
@@ -116,6 +138,11 @@ namespace VidRental.Services.Services
             return cartridge;
         }
 
+        /// <summary>
+        /// Gets cartridges details for edition
+        /// </summary>
+        /// <param name="id">Cartridge id</param>
+        /// <returns>Cartridge edit details</returns>
         public async Task<CartridgeEditDetails> GetEditDetails(Guid id)
         {
             var cartridgeDb = await CartridgeRepo
@@ -137,6 +164,12 @@ namespace VidRental.Services.Services
             return cartridge;
         }
 
+        /// <summary>
+        /// Updates cartridge
+        /// </summary>
+        /// <param name="cartridgeId">Cartridge to update id</param>
+        /// <param name="request">Update data request</param>
+        /// <returns>True if successful</returns>
         public async Task<bool> UpdateCartridge(Guid cartridgeId, CartridgeUpdateRequest request)
         {
             var cartridgeDb = await CartridgeRepo
@@ -172,6 +205,10 @@ namespace VidRental.Services.Services
             return true;
         }
 
+        /// <summary>
+        /// Gets cartridges for rent list
+        /// </summary>
+        /// <returns>List of cartridges for rent</returns>
         public async Task<IEnumerable<CartridgeForRentList>> CartridgesForRent()
         {
             var cartridgesDb = await CartridgeRepo
@@ -197,6 +234,11 @@ namespace VidRental.Services.Services
             return result;
         }
 
+        /// <summary>
+        /// Gets cartridge for rent by id
+        /// </summary>
+        /// <param name="id">Cartridge id</param>
+        /// <returns>Cartridge for rent</returns>
         public async Task<CartridgeForRent> CartridgeForRent(Guid id)
         {
             var cartridgeDb = await CartridgeRepo
@@ -225,6 +267,12 @@ namespace VidRental.Services.Services
             return result;
         }
     
+        /// <summary>
+        /// Gets data for given cartridge rent form
+        /// </summary>
+        /// <param name="cartridgeId">Cartridge to rent id</param>
+        /// <param name="userId">User that wants to rent it</param>
+        /// <returns>Data for cartridge rental form</returns>
         public async Task<CartridgeRental> CartridgeForRentForm(Guid cartridgeId, Guid userId)
         {
             var userDb = await ShopUserRepo
@@ -283,6 +331,12 @@ namespace VidRental.Services.Services
             return result;
         }
     
+        /// <summary>
+        /// Helper for creating copies of cartridge
+        /// </summary>
+        /// <param name="amount">Amount to create</param>
+        /// <param name="val">True to create avaible cartridge copies</param>
+        /// <param name="cartridgeId">Cartridge id to create copies</param>
         private async Task MakeCopiesAvaOrUnava(int amount, bool val, Guid cartridgeId)
         {
             var copies = await CartridgeCopyRepo

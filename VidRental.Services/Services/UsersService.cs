@@ -13,6 +13,9 @@ using VidRental.Services.Dtos.Response.User;
 
 namespace VidRental.Services.Services
 {
+    /// <summary>
+    /// Contains logic for managing aps user 
+    /// </summary>
     public class UsersService : IUsersService
     {
         public UsersService(UserManager<User> userManager, IMapper mapper)
@@ -24,6 +27,11 @@ namespace VidRental.Services.Services
         public UserManager<User> UserManager { get; }
         public IMapper Mapper { get; }
 
+        /// <summary>
+        /// Gets user base info by asp user id
+        /// </summary>
+        /// <param name="id">Asp user id</param>
+        /// <returns>User base info</returns>
         public async Task<UserBaseInfo> GetUserBaseInfo(string id)
         {
             var userDb = await UserManager.Users.FirstOrDefaultAsync(user => user.Id == id);

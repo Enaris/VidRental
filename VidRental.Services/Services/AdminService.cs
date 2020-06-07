@@ -11,6 +11,9 @@ using VidRental.Services.Dtos.Response.User;
 
 namespace VidRental.Services.Services
 {
+    /// <summary>
+    /// Class containg logic for admin actions
+    /// </summary>
     public class AdminService : IAdminService
     {
         private IShopEmployeeService ShopEmployeeService { get; }
@@ -27,6 +30,11 @@ namespace VidRental.Services.Services
             AuthService = authService;
         }
 
+        /// <summary>
+        /// Adds new employe and asp user entity for it
+        /// </summary>
+        /// <param name="request">Emplyee add request</param>
+        /// <returns>Created user</returns>
         public async Task<UserBaseInfo> AddEmployee(EmployeeAddRequestFlat request)
         {
             var userToCreate = Mapper.Map<EmployeeAddRequestFlat, User>(request);
