@@ -171,6 +171,7 @@ namespace VidRental.Services.Services
             else
                 cartridgeCopy.Avaible = true;
             CartridgeCopyRepo.Update(cartridgeCopy);
+            await CartridgeCopyRepo.SaveChangesAsync();
             await RentalRepo.SaveChangesAsync();
 
             return true;
